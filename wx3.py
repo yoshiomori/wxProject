@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 import wx
 from wx.lib.calendar import Calendar
+from wx.animate import GIFAnimationCtrl
 
 # funcao que recebe um elemento  com posicao e tamanho e retorna a posicao embaixo dele.
+
+
 def embaixo(elemento):
     return elemento.GetPosition()[0], elemento.GetPosition()[1] + elemento.GetSize()[1]
+
 
 # funcao que recebe um elemento com posicao e tamanho e retorna a posicao na direita.
 def na_direita(elemento):
@@ -14,13 +18,13 @@ def na_direita(elemento):
 app = wx.App()
 
 # A Frame is a top-level window.
-frame = wx.Frame(None, title="Hello World", size=(800, 600))
+frame = wx.Frame(None, title="Hello World")
 
 # Iniciando um Panel no frame.
 panel = wx.Panel(frame)
 
 # Criando um controle de texto no Panel.
-text_ctrl1 = wx.TextCtrl(panel, style=wx.TE_MULTILINE, pos=(0, 0))
+text_ctrl1 = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
 
 # Criando outro controle de texto embaixo do primeiro.
 text_ctrl2 = wx.TextCtrl(panel, style=wx.TE_MULTILINE, pos=embaixo(text_ctrl1))
@@ -40,11 +44,21 @@ button3 = wx.Button(frame, pos=embaixo(button2))
 # Calendar
 calendar = Calendar(frame, pos=na_direita(panel))
 
+# GIFAnimationCtrl
+gif_animation_ctrl = GIFAnimationCtrl(frame, filename="giphy.gif", pos=na_direita(calendar))
+
 # Criando um manipulador para o botao 2
 frame.Bind(wx.EVT_BUTTON, lambda event: text_ctrl2.AppendText("%d " % calendar.GetDay()), button2)
 
 # Criando um manipulador ao EVT_BUTTON.
 panel.Bind(wx.EVT_BUTTON, lambda event: text_ctrl1.AppendText(" oi"), button1)
+
+# Criando um manipulador para o botao 3.
+frame.Bind(
+    wx.EVT_BUTTON,
+    lambda event: gif_animation_ctrl.Stop() if gif_animation_ctrl.IsPlaying() else gif_animation_ctrl.Play(),
+    button3
+)
 
 # Calculando melhor tamanho.
 size = frame.GetBestSize()
